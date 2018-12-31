@@ -148,7 +148,7 @@ firewall {
             action accept
             description "Port Forward - Router SSH"
             destination {
-                address 192.168.1.1
+                address 192.168.2.1
                 port 22
             }
             protocol tcp
@@ -157,7 +157,7 @@ firewall {
             action accept
             description "Port Forward - Router HTTPS"
             destination {
-                address 192.168.1.1
+                address 192.168.2.1
                 port 443
             }
             protocol tcp
@@ -254,8 +254,8 @@ interfaces {
         speed auto
     }
     ethernet eth1 {
-        address 192.168.99.1/24
-        description "Local Config"
+        address 192.168.1.1/24
+        description "LAN_LOCAL"
         duplex auto
         firewall {
             in {
@@ -267,8 +267,8 @@ interfaces {
     loopback lo {
     }
     ethernet eth2 {
-        address 192.168.1.1/24
-        description LAN
+        address 192.168.2.1/24
+        description "LAN_LOCAL_2"
         duplex auto
         firewall {
             in {
@@ -291,7 +291,7 @@ port-forward {
     rule 10 {
         description "Router SSH"
         forward-to {
-            address 192.168.1.1
+            address 192.168.2.1
             port 22
         }
         original-port 2222
@@ -300,7 +300,7 @@ port-forward {
     rule 20 {
         description "Router HTTPS"
         forward-to {
-            address 192.168.1.1
+            address 192.168.2.1
             port 443
         }
         original-port 8080
@@ -325,29 +325,29 @@ service {
                 }
             }
         }
-        shared-network-name LAN {
+        shared-network-name LAN_LOCAL_2 {
             authoritative disable
-            subnet 192.168.1.0/24 {
-                default-router 192.168.1.1
-                dns-server 192.168.1.1
+            subnet 192.168.2.0/24 {
+                default-router 192.168.2.1
+                dns-server 192.168.2.1
                 dns-server 8.8.8.8
                 dns-server 8.8.4.4
                 domain-name example.com
                 lease 86400
-                start 192.168.1.101 {
-                    stop 192.168.1.254
+                start 192.168.2.101 {
+                    stop 192.168.2.254
                 }
             }
         }
-        shared-network-name Config {
+        shared-network-name LAN_LOCAL {
             authoritative disable
-            subnet 192.168.99.0/24 {
-                default-router 192.168.99.1
+            subnet 192.168.1.0/24 {
+                default-router 192.168.1.1
                 dns-server 8.8.8.8
                 dns-server 8.8.4.4
                 lease 86400
-                start 192.168.99.101 {
-                    stop 192.168.99.255
+                start 192.168.1.101 {
+                    stop 192.168.1.255
                 }
             }
         }
